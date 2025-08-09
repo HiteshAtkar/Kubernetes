@@ -36,6 +36,8 @@ Enable the following **Inbound Rules**:
    ```bash
    vim kind.sh
 
+6. **Add this text in kind.sh from [here](https://example.com)**
+
 7. **Save the file in Vim**
    - Press:
      ```
@@ -63,3 +65,6 @@ Enable the following **Inbound Rules**:
 9. **Verify cluster nodes**
    ```bash
    .kubectl get nodes
+
+
+
