@@ -5,7 +5,7 @@
 **One-Command Installation** for:
 - macOS  
 - AWS EC2 (Ubuntu/Debian based)
-- 
+
 **Step-by-Step Scripts**
 - Ready-to-use bash scripts for local & cloud environments.
 - Saves hours of manual setup and troubleshooting.
