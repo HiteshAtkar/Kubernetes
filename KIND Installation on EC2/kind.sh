@@ -1,60 +1,66 @@
-#!/bin/bash
+## Install KIND on AWS EC2
 
-set -e 
-set -o pipefail
+### 1. Prepare EC2 Instance
+- **OS**: Ubuntu 22.04 (Recommended)
+- **Instance Type**: t3.medium or bigger
 
-echo "Starting installation of Docker, Kind, and kubectl..."
+### Security Group Settings
+Enable the following **Inbound Rules**:
+| Port | Purpose |
+|------|---------|
+| 22   | SSH — To connect to your EC2 instance |
+| 6443 | Kubernetes API Server — For `kubectl` and cluster communication |
+| 80   | HTTP — For web services without HTTPS |
+| 443  | HTTPS — For secure web services |
 
-if ! command -v docker &>/dev/null; then
-  echo "Installing Docker..."
-  sudo apt-get update -y
-  sudo apt-get install -y docker.io
+---
 
-  echo "Adding current user to docker group..."
-  sudo usermod -aG docker "$USER"
+### 2. Connect to EC2 via SSH
+1. Download the **.pem** key from AWS.
+2. Open Terminal/CMD and navigate to the directory where the `.pem` key is stored.
+3. Set correct permissions:
+   ```bash
+   chmod 400 my-key.pem
+4. **Connect to EC2 Instance**
+   - Go to **AWS EC2 Dashboard** → **Select your instance** → **Connect** → **SSH Client**.
+   - Copy the **SSH connection command** and paste it into your terminal:
+     ```bash
+     ssh -i "my-key.pem" ec2-user@<EC2_PUBLIC_IP>
+     ```
 
-  echo "Docker installed and user added to docker group."
-else
-  echo "Docker is already installed."
-fi
+5. **Create and Edit the Installation Script**
+   ```bash
+   vim kind.sh
 
-if ! command -v kind &>/dev/null; then
-  echo "Installing Kind..."
+6. **Add this text in kind.sh from [here](https://github.com/HiteshAtkar/Kubernetes/blob/main/KIND%20Installation%20on%20EC2/kind.sh)**
 
-  ARCH=$(uname -m)
-  if [ "$ARCH" = "x86_64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64
-  elif [ "$ARCH" = "aarch64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-arm64
-  else
-    echo "Unsupported architecture: $ARCH"
-    exit 1
-  fi
+7. **Save the file in Vim**
+   - Press:
+     ```
+     ESC
+     :wq
+     ```
+     This will save and quit the file editor.
 
-  chmod +x ./kind
-  sudo mv ./kind /usr/local/bin/kind
-  echo "Kind installed successfully."
-else
-  echo "Kind is already installed."
-fi
+8. **Make the script executable**
+   ```bash
+   chmod 777 kind.sh
 
-if ! command -v kubectl &>/dev/null; then
-  echo "Installing kubectl (latest stable version)..."
+9. **Run the KIND setup script**
+   ```bash
+   ./kind.sh
 
-  curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-  rm -f kubectl
+9. **Add current user to the Docker group**
+   ```bash
+   sudo usermod -aG docker $USER && newgrp docker
 
-  echo "kubectl installed successfully."
-else
-  echo "kubectl is already installed."
-fi
+9. **Create a KIND cluster**
+   ```bash
+   kind create cluster --name my-ec2-cluster
 
-echo
-echo "Installed Versions:"
-docker --version
-kind --version
-kubectl version --client --output=yaml
+9. **Verify cluster nodes**
+   ```bash
+   .kubectl get nodes
 
-echo
-echo "Docker, Kind, and kubectl installation complete!"
+
+
