@@ -32,7 +32,7 @@ Enable the following **Inbound Rules**:
    ```bash
    vim minikube.sh
 
-6. **Add this text in kind.sh from [here](https://example.com)**
+6. **Add this text in kind.sh from [here](https://github.com/HiteshAtkar/Kubernetes/blob/main/Minikube%20Installation%20on%20EC2/minikube.sh)**
 
 7. **Save the file in Vim**
    - Press:
