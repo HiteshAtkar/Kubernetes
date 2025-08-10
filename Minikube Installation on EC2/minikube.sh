@@ -11,7 +11,7 @@ sudo apt install -y curl wget apt-transport-https ca-certificates conntrack
 echo "Installing Docker..."
 sudo apt install -y docker.io
 sudo systemctl enable docker --now
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $USER && newgrp docker
 
 echo "Downloading Minikube..."
 curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
